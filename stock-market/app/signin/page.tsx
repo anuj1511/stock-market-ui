@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Copyright from "../ui/utility/Copyright";
@@ -21,6 +22,17 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const defaultTheme = createTheme();
 
+/*
+  Github OAuth:
+  Forward the user to the github login screen (we pass in the client ID)
+  User is now on the github side and log in (github.com/login)
+  When user decided to login... they get forwarded back to localhost:3000
+  BUT localhost:3000?code=ASDFASDFASDFASDF
+  Use the code to get the access token (code can be only used once)
+*/
+
+const CLIENT_ID = "Ov23liMBpnOcVTJcRQXb";
+
 export default function SignIn() {
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -28,7 +40,9 @@ export default function SignIn() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
   };
 
@@ -39,6 +53,12 @@ export default function SignIn() {
       email: data.get("email"),
       password: data.get("password"),
     });
+  };
+
+  const handleLoginWithGithub = () => {
+    window.location.assign(
+      "https://github.com/login/oauth/authorize?client_id=" + CLIENT_ID
+    );
   };
 
   return (
@@ -123,6 +143,12 @@ export default function SignIn() {
               </Grid>
             </Grid>
           </Box>
+          <Avatar
+            sx={{ m: 1, bgcolor: "black", marginTop: 5 }}
+            onClick={handleLoginWithGithub}
+          >
+            <GitHubIcon />
+          </Avatar>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
