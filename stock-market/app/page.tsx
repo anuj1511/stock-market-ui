@@ -21,7 +21,7 @@ export default function Home() {
       if (codeParam && localStorage.getItem("githubAccessToken") === null) {
         const getAccessToken = async () => {
           try {
-            const response = await fetch("http://localhost:4000/getAccessToken?code=" + codeParam, {
+            const response = await fetch("http://localhost:8000/polls/oauth/access-token/?code=" + codeParam, {
               method: "GET",
             });
             const data = await response.json();
@@ -43,7 +43,7 @@ export default function Home() {
       try {
         const token = localStorage.getItem("githubAccessToken");
         if (token) {
-          const response = await fetch("http://localhost:4000/getUserData", {
+          const response = await fetch("http://localhost:8000/polls/github/user/", {
             method: "GET",
             headers: {
               Authorization: "Bearer " + token,
@@ -63,7 +63,7 @@ export default function Home() {
       try {
         const token = localStorage.getItem("githubAccessToken");
         if (token) {
-          const response = await fetch("http://localhost:4000/getUserEmail", {
+          const response = await fetch("http://localhost:8000/polls/github/user/emails/", {
             method: "GET",
             headers: {
               Authorization: "Bearer " + token,
