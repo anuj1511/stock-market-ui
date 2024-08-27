@@ -46,7 +46,26 @@ app.get('/getUserData', async (req, res) => {
 	}).then((response) => {
 		return response.json();
 	}).then((data) => {
-		console.log("user data: " + data)
+		console.log("user data: ");
+		console.log(data);
+		res.json(data)
+	})
+})
+// getUserEmail
+// call to user/emails
+
+app.get('/getUserEmail', async (req, res) => {
+	req.get('Authorization'); // Bearer ACCESSTOKEN
+	await fetch("https://api.github.com/user/emails", {
+		method: "GET",
+		headers: {
+			"Authorization": req.get("Authorization") // Bearer ACCESSTOKEN
+		}
+	}).then((response) => {
+		return response.json();
+	}).then((data) => {
+		console.log("user data: ");
+		console.log(data);
 		res.json(data)
 	})
 })
