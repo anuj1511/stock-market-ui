@@ -7,6 +7,7 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [rerender, setRerender] = useState(false);
   const [userData, setUserData] = useState({});
+  const [userEmailData, setUserEmailData] = useState({});
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -57,6 +58,26 @@ export default function Home() {
     }
   };
 
+  const getUserEmailData = async () => {
+    if (isClient) {
+      try {
+        const token = localStorage.getItem("githubAccessToken");
+        if (token) {
+          const response = await fetch("http://localhost:4000/getUserEmail", {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          });
+          const data = await response.json();
+          setUserEmailData(data);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+  };
+
   return (
     <>
       {isClient && localStorage.getItem("githubAccessToken") ? (
@@ -81,6 +102,18 @@ export default function Home() {
               <h4>NO user data</h4>
             </>
           )}
+          <h3>Get User Email from Github API</h3>
+          <button onClick={() => getUserEmailData()}>Get Email Data</button>
+          {Object.keys(userEmailData).length !== 0 ? (
+            <>
+              <h4>Hey your email is:  {JSON.stringify(userEmailData)}</h4>
+            </>
+          ) : (
+            <>
+              <h4>NO user email data</h4>
+            </>
+          )}
+
         </>
       ) : (
         <>
