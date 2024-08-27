@@ -14,11 +14,22 @@ import OAuthIcon from "./OAuthIcon";
   BUT localhost:3000?code=ASDFASDFASDFASDF
   Use the code to get the access token (code can be only used once)
 */
-const CLIENT_ID = "Ov23liMBpnOcVTJcRQXb";
-const REDIRECT_URL = "http://localhost:3000";
 
 export default function OAuthParent() {
   const handleLoginWithGithub = () => {
+    const CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID as string;
+    const REDIRECT_URL  = process.env.NEXT_PUBLIC_REDIRECT_URL as string;
+    
+    if (!CLIENT_ID) {
+      console.error('Error: GitHub Client ID (GITHUB_CLIENT_ID) is not defined.');
+      return;
+    }
+  
+    if (!REDIRECT_URL) {
+      console.error('Error: Redirect URL (REDIRECT_URL) is not defined.');
+      return;
+    }
+    
     window.location.assign(
       `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
         REDIRECT_URL
