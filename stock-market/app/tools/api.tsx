@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig, AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 
 const axiosInstance = axios.create({
@@ -12,28 +12,33 @@ const axiosInstance = axios.create({
 // Add an interceptor to include the authorization token in every request
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    // Get the token from cookies
     const token = Cookies.get('authToken');
-
-    // Add the token to the request headers if it exists
     if (token) {
       config.headers['Authorization'] = `Token ${token}`;
     }
-
     return config;
   },
   (error) => {
-    // Handle request error
     return Promise.reject(error);
   }
 );
 
-export const fetchData = async <T = any>(url: string, options: AxiosRequestConfig = {}): Promise<T> => {
+export const fetchData = async <T = any>(url: string, options: AxiosRequestConfig = {}): Promise<AxiosResponse<T>> => {
   try {
     const response: AxiosResponse<T> = await axiosInstance(url, options);
-    return response.data;
+    return response;
   } catch (error: any) {
-    console.error('Error retrieving data:', error);
-    throw new Error('Could not fetch data');
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        console.error('Error response data:', axiosError.response.data);
+        console.error('Error response status:', axiosError.response.status);
+      } else {
+        console.error('Error message:', axiosError.message);
+      }
+    } else {
+      console.error('Unexpected error:', error);
+    }
+    throw error;
   }
 };
