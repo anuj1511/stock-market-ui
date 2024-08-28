@@ -3,23 +3,34 @@
 import * as React from "react";
 import SignIn from "../../ui/auth/SignIn";
 import OAuthParent from "../../ui/auth/OAuthParent";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { fetchData } from "@/app/tools/api";
 import Cookies from "js-cookie";
-
 import {loginCreds} from "@/app/lib/types"
+import { AUTH_TOKEN_KEY } from "@/app/lib/constansts";
 
 
 export default function SignInPage() {
 
   const searchParams = useSearchParams();
+  const router = useRouter();
 
 
   React.useEffect(() => {
+    console.log("called")
+    if(Cookies.get(AUTH_TOKEN_KEY)) {
+      router.push('/');
+      return;
+    }
+
     const codeParam = searchParams.get("code");
-    if(codeParam && Cookies.get('authToken') === null)
+    console.log(codeParam)
+    console.log(Cookies.get(AUTH_TOKEN_KEY))
+    if(codeParam && Cookies.get(AUTH_TOKEN_KEY) === undefined) {
       loginWithGitHub(codeParam)
-  }, [])
+    }
+
+  }, [searchParams])
 
 
   const loginWithGitHub = async (githubCode: string) => {
@@ -35,7 +46,8 @@ export default function SignInPage() {
         },
       });
       console.log('Login Response:', response);
-      Cookies.set('authToken', response.data.token, { expires: 7, secure: true, sameSite: 'Strict' });
+      Cookies.set(AUTH_TOKEN_KEY, response.data.token, { expires: 7, secure: true, sameSite: 'Strict' });
+      router.push('/');
     } catch (error) {
       console.error('Error logging in:', error);
     }
@@ -53,7 +65,8 @@ export default function SignInPage() {
         data: creds,
       });
       console.log('Login Response:', response);
-      Cookies.set('authToken', response.data.token, { expires: 7, secure: true, sameSite: 'Strict' });
+      Cookies.set(AUTH_TOKEN_KEY, response.data.token, { expires: 7, secure: true, sameSite: 'Strict' });
+      router.push('/');
     } catch (error) {
       console.error('Error logging in:', error);
     }

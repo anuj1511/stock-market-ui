@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig, AxiosError } from 'axios';
 import Cookies from 'js-cookie';
+import { AUTH_TOKEN_KEY } from '../lib/constansts';
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8000/polls',
@@ -12,7 +13,7 @@ const axiosInstance = axios.create({
 // Add an interceptor to include the authorization token in every request
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const token = Cookies.get('authToken');
+    const token = Cookies.get(AUTH_TOKEN_KEY);
     if (token) {
       config.headers['Authorization'] = `Token ${token}`;
     }
