@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
@@ -13,8 +13,13 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { loginCreds } from "@/app/lib/types";
 
-export default function SignIn() {
+type SignInProps = {
+  loginUsingCredentials: (creds: loginCreds) => void;
+};
+
+export default function SignIn({ loginUsingCredentials }: SignInProps) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => {
@@ -27,6 +32,11 @@ export default function SignIn() {
     event.preventDefault();
   };
 
+  // Type guard to check if a value is a non-null string
+  const isString = (value: FormDataEntryValue | null): value is string => {
+    return typeof value === "string";
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -34,6 +44,28 @@ export default function SignIn() {
       email: data.get("email"),
       password: data.get("password"),
     });
+
+    // Retrieve values from FormData
+    const emailEntry = data.get("email");
+    const passwordEntry = data.get("password");
+
+    // Validate form fields
+    if (!isString(emailEntry)) {
+      alert("Email field can't be empty and must be a string");
+      return;
+    }
+
+    if (!isString(passwordEntry)) {
+      alert("Password field can't be empty and must be a string");
+      return;
+    }
+
+    const creds: loginCreds = {
+      username: emailEntry,
+      password: passwordEntry,
+    };
+
+    loginUsingCredentials(creds);
   };
 
   return (
