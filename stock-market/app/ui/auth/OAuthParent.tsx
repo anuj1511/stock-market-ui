@@ -16,7 +16,7 @@ import OAuthIcon from "./OAuthIcon";
 */
 
 export default function OAuthParent() {
-  const handleLoginWithGithub = () => {
+  const getGithubAccessCode = () => {
     const CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID as string;
     const REDIRECT_URL  = process.env.NEXT_PUBLIC_REDIRECT_URL as string;
     
@@ -47,7 +47,7 @@ export default function OAuthParent() {
     >
       <OAuthIcon
         icon={GitHubIcon}
-        onClick={handleLoginWithGithub}
+        onClick={getGithubAccessCode}
         color="black"
       />
       <OAuthIcon
