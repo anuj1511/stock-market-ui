@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import { IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { loginCreds } from "@/app/lib/types";
+import { isString } from "@/app/lib/utility";
 
 type SignInProps = {
   loginUsingCredentials: (creds: loginCreds) => void;
@@ -30,11 +31,6 @@ export default function SignIn({ loginUsingCredentials }: SignInProps) {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
-  };
-
-  // Type guard to check if a value is a non-null string
-  const isString = (value: FormDataEntryValue | null): value is string => {
-    return typeof value === "string";
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

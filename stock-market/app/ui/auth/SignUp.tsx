@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
@@ -11,19 +11,25 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-
 import { IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { signupCreds } from "@/app/lib/types";
+import { isString } from "@/app/lib/utility";
 
-export default function SignUp() {
+type SignUpProps = {
+  signupUsingCredentials: (cred: signupCreds) => void;
+};
 
+export default function SignUp({ signupUsingCredentials }: SignUpProps) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
   };
 
@@ -33,7 +39,30 @@ export default function SignUp() {
     console.log({
       email: data.get("email"),
       password: data.get("password"),
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
     });
+
+    // Retrieve values from FormData
+    const emailEntry = data.get("email");
+    const passwordEntry = data.get("password");
+    const firstNameEntry = data.get('firstName');
+    const lastNameEntry = data.get('lastName');
+
+    // Validate form fields
+    if(!isString(firstNameEntry) || !isString(lastNameEntry) || !isString(emailEntry) || !isString(passwordEntry)) {
+      alert("The type of input values is non-string");
+      return;
+    }
+
+    const creds: signupCreds = {
+      first_name: firstNameEntry,
+      last_name: lastNameEntry,
+      email: emailEntry,
+      password: passwordEntry
+    };
+
+    signupUsingCredentials(creds);
   };
 
   return (
@@ -59,7 +88,7 @@ export default function SignUp() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              required
+              required={false}
               fullWidth
               id="lastName"
               label="Last Name"
