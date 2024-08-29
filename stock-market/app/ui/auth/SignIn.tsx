@@ -61,7 +61,7 @@ export default function SignIn({ loginUsingCredentials }: SignInProps) {
     }
 
     const creds: loginCreds = {
-      username: emailEntry,
+      email: emailEntry,
       password: passwordEntry,
     };
 

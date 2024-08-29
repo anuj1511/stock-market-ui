@@ -1,18 +1,32 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { AUTH_TOKEN_KEY } from "./lib/constansts";
 
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    const token = Cookies.get(AUTH_TOKEN_KEY);
+    setIsLoggedIn(!!token);
+    setIsChecked(true); // Indicate that the check has been completed
+  }, []);
+
+  if (!isChecked) {
+    return null; // Or a loading indicator
+  }
+
   return (
     <>
-      {Cookies.get(AUTH_TOKEN_KEY) ? (
+      {isLoggedIn ? (
         <>
           <h3>User is logged in</h3>
           <button
             onClick={() => {
-              Cookies.remove(AUTH_TOKEN_KEY)
+              Cookies.remove(AUTH_TOKEN_KEY);
+              setIsLoggedIn(false); // Update state after logout
             }}
           >
             Logout

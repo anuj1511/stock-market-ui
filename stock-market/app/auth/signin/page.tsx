@@ -8,33 +8,38 @@ import { fetchData } from "@/app/tools/api";
 import Cookies from "js-cookie";
 import {loginCreds} from "@/app/lib/types"
 import { AUTH_TOKEN_KEY } from "@/app/lib/constansts";
+import { CircularProgress } from "@mui/material";
 
 
 export default function SignInPage() {
 
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState(false)
 
 
   React.useEffect(() => {
-    console.log("called")
     if(Cookies.get(AUTH_TOKEN_KEY)) {
       router.push('/');
       return;
     }
 
     const codeParam = searchParams.get("code");
-    console.log(codeParam)
-    console.log(Cookies.get(AUTH_TOKEN_KEY))
-    if(codeParam && Cookies.get(AUTH_TOKEN_KEY) === undefined) {
+    
+    if(codeParam) {
       loginWithGitHub(codeParam)
     }
 
+    // Clean up URL after handling codeParam
+    const url = new URL(window.location.href);
+    url.searchParams.delete('code');
+    window.history.replaceState({}, '', url.toString());
   }, [searchParams])
 
 
   const loginWithGitHub = async (githubCode: string) => {
     try {
+      setIsLoading(true);
       const response = await fetchData('/login/', {
         method: 'POST',
         headers: {
@@ -50,12 +55,15 @@ export default function SignInPage() {
       router.push('/');
     } catch (error) {
       console.error('Error logging in:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
 
   const loginUsingCredentials = async (creds: loginCreds) => {
     try {
+      setIsLoading(true);
       const response = await fetchData('/login/', {
         method: 'POST',
         headers: {
@@ -69,9 +77,16 @@ export default function SignInPage() {
       router.push('/');
     } catch (error) {
       console.error('Error logging in:', error);
+      // removing the code param
+      router.push('/auth/singnin');
+    } finally {
+      setIsLoading(false);
     }
   }
 
+  if(isLoading) {
+    return <CircularProgress />
+  }
 
   return (
     <>
