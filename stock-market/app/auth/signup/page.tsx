@@ -8,14 +8,17 @@ import { fetchData } from "@/app/tools/api";
 import Cookies from "js-cookie";
 import { AUTH_TOKEN_KEY } from "@/app/lib/constansts";
 import { CircularProgress } from "@mui/material";
+import { useSnackbar } from 'notistack';
 
 export default function SignUpPage() {
 
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false)
+  const { enqueueSnackbar } = useSnackbar();
 
   React.useEffect(() => {
     if(Cookies.get(AUTH_TOKEN_KEY)) {
+      enqueueSnackbar("Session retrived, redirecting to Home page", {variant: 'info'})
       router.push('/');
     }
   }, [])
@@ -32,9 +35,11 @@ export default function SignUpPage() {
         data: creds,
       });
       console.log('Login Response:', response);
+      enqueueSnackbar("Signed-in successfully, please login to continue", {variant: 'success'})
       router.push('/auth/signin');
     } catch (error) {
       console.error('Error logging in:', error);
+      enqueueSnackbar('An unknown error occurred', { variant: 'error' });
     } finally {
       setIsLoading(false);
     }

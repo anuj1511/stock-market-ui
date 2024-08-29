@@ -9,17 +9,18 @@ import Cookies from "js-cookie";
 import {loginCreds} from "@/app/lib/types"
 import { AUTH_TOKEN_KEY } from "@/app/lib/constansts";
 import { CircularProgress } from "@mui/material";
-
+import { useSnackbar } from 'notistack';
 
 export default function SignInPage() {
 
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(false)
-
+  const { enqueueSnackbar } = useSnackbar();
 
   React.useEffect(() => {
     if(Cookies.get(AUTH_TOKEN_KEY)) {
+      enqueueSnackbar("Session retrived, redirecting to Home page", {variant: 'info'})
       router.push('/');
       return;
     }
@@ -29,11 +30,6 @@ export default function SignInPage() {
     if(codeParam) {
       loginWithGitHub(codeParam)
     }
-
-    // Clean up URL after handling codeParam
-    const url = new URL(window.location.href);
-    url.searchParams.delete('code');
-    window.history.replaceState({}, '', url.toString());
   }, [searchParams])
 
 
@@ -51,10 +47,12 @@ export default function SignInPage() {
         },
       });
       console.log('Login Response:', response);
+      enqueueSnackbar("Logged in successfully", {variant: 'success'})
       Cookies.set(AUTH_TOKEN_KEY, response.data.token, { expires: 7, secure: true, sameSite: 'Strict' });
       router.push('/');
     } catch (error) {
       console.error('Error logging in:', error);
+      enqueueSnackbar('An unknown error occurred', { variant: 'error' });
     } finally {
       setIsLoading(false);
     }
@@ -73,12 +71,12 @@ export default function SignInPage() {
         data: creds,
       });
       console.log('Login Response:', response);
+      enqueueSnackbar("Logged in successfully", {variant: 'success'})
       Cookies.set(AUTH_TOKEN_KEY, response.data.token, { expires: 7, secure: true, sameSite: 'Strict' });
       router.push('/');
     } catch (error) {
       console.error('Error logging in:', error);
-      // removing the code param
-      router.push('/auth/singnin');
+      enqueueSnackbar('An unknown error occurred', { variant: 'error' });
     } finally {
       setIsLoading(false);
     }
