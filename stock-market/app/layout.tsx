@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import NavBar from '@/app/ui/utility/NavBar'
-
+import NavBar from "@/app/ui/utility/NavBar";
+import { NotistackProvider } from "./hooks/SnackbarProviderClient";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -18,8 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NavBar />
-        {children}
+        <NotistackProvider>
+          <NavBar />
+          {children}
+        </NotistackProvider>
       </body>
     </html>
   );
