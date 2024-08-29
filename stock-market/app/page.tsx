@@ -5,10 +5,6 @@ import Cookies from "js-cookie";
 import { AUTH_TOKEN_KEY } from "./lib/constansts";
 
 export default function Home() {
-
-  console.log(AUTH_TOKEN_KEY)
-  console.log(Cookies.get(AUTH_TOKEN_KEY))
-
   return (
     <>
       {Cookies.get(AUTH_TOKEN_KEY) ? (
