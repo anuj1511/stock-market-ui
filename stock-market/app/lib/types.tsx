@@ -9,3 +9,12 @@ export type signupCreds = {
 	email: string,
 	password: string
 }
+
+export type Stock = {
+  id: number;
+  name: string;
+  total_volume: string;
+  unallocated: string;
+  price: string;
+  sector: number;
+}
